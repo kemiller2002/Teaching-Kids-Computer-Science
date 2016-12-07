@@ -16,3 +16,12 @@ QUnit.test("Check for alphabet", (assert:Assert) => {
         assert.ok(alphabet[0] === 'a' , "Found a"); 
     }
 );
+
+
+QUnit.test ("Check Shift", (assert:Assert) => {
+    let shift = new ShiftCipher(); 
+
+    let message = shift.mixCharacters("this is a test");
+
+    assert.ok (true , message);
+});
