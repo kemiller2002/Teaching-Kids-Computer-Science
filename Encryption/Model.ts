@@ -3,11 +3,29 @@ interface EncryptionMethod {
     mixCharacters (message:string) : string
 }
 
+class LetterAndReplacement {
+    constructor (public letter : string){}
+ 
+    replacement : string = ""; 
+}
+
+
+
+interface Object {
+    tee<T>(fn : any) : T;
+}
+
+
+Object.prototype.tee = function<T> (fn : (i : T)=>void) {
+    fn (this);
+    return this;
+}
+
 class Model {
 
     constructor () {}
 
-    alphabet:string[] = this.makeAlphabet (); 
+    alphabet:LetterAndReplacement[] = this.makeAlphabet (); 
 
     encryptionMethods : EncryptionMethod[] = [
        new PlainText(), new ShiftCipher(), new SubstitutionCipher()
@@ -16,8 +34,10 @@ class Model {
 
     selectedItem : EncryptionMethod; 
 
-    makeAlphabet () : string[] {
-        return "abcdefghijklmnopqrstuvwxyz".split('');  
+    makeAlphabet () : LetterAndReplacement[] {
+        return "abcdefghijklmnopqrstuvwxyz".
+                split('').
+                map((l, _) => (new LetterAndReplacement(l)) );  
     }
 }
 

@@ -1,8 +1,7 @@
 <html>
 
 <head>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js" ></script>-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-debug.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js" ></script>
     <script src="Model.js" ></script>
 </head>
 
@@ -20,19 +19,21 @@
         <span>Alphabet</span>
         <div data-bind="foreach: alphabet">
             <div style="float:left;padding-left:2px;text-align:center;">
-                    <span data-bind="text:$data"></span>
+                    <span data-bind="text:letter"></span>
                     <br/>
-                    <input type="text" style="width:20px;" maxlength="1" />
+                    <input type="text"  data-bind="text:replacement" style="width:20px;" maxlength="1" />                    
             </div>
         </div>
         
     </div>
 
-    <div style="clear:both">
+    <div style="clear:both;padding-top:30px;">
             <span>Message<span>
-
+            
             <div>
-
+                <div data-bind="foreach: message">
+                    
+                </div>
 
                 
             </div>
