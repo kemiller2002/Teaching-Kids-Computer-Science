@@ -8,4 +8,11 @@ declare class QUnit {
 }
 
 
-QUnit.test("example", (assert:Assert)=> assert.ok(true, "YAY!") );
+QUnit.test("Check for alphabet", (assert:Assert) => {
+        let model = new Model(); 
+
+        let alphabet = model.makeAlphabet();
+
+        assert.ok(alphabet[0] === 'a' , "Found a"); 
+    }
+);

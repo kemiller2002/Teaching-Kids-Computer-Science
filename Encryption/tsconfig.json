@@ -1,8 +1,12 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "sourceMap": true,
-        "listFiles": false
-    }
+        "sourceMap": true
+    },
+    "files" : [
+        "tests.ts", 
+        "Model.ts"
+    ]
 }
