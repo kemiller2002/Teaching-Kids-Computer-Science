@@ -21,7 +21,11 @@ QUnit.test("Check for alphabet", (assert:Assert) => {
 QUnit.test ("Check Shift", (assert:Assert) => {
     let shift = new ShiftCipher(); 
 
-    let message = shift.mixCharacters("this is a test");
+    let unencryptedMessage = "this is a test."
+
+    let message = shift.mixCharacters(unencryptedMessage);
 
     assert.ok (true , message);
+    assert.ok (message.length === unencryptedMessage.length, "Length is the same.")
+    assert.ok (message[message.length -1] === '.', "Period not encrypted.")
 });
