@@ -28,7 +28,7 @@ class Model {
     alphabet:LetterAndReplacement[] = this.makeAlphabet (); 
 
     encryptionMethods : EncryptionMethod[] = [
-       new PlainText(), new ShiftCipher(), new SubstitutionCipher()
+       new PlainText(), new ShiftCipher(), new SubstitutionCipher(this.makeAlphabet)
     ]
 
 
@@ -70,6 +70,30 @@ class ShiftCipher implements EncryptionMethod {
 class SubstitutionCipher implements EncryptionMethod {
 
     name =  "Substitution Cipher"
+
+    constructor (makeLetters : () => LetterAndReplacement[]) {
+        this.alphabet = makeLetters ();
+        let count = this.alphabet.length; 
+
+    }
+
+
+    static randomizeNumberOrder (maxLength: number, numbers:number[]) : void{
+        if(maxLength === numbers.length){
+            return;
+        }
+
+        let newNumber = Math.floor(Math.random() * (1 - 26) + 1)
+
+        if(numbers.indexOf(newNumber) === -1){
+            numbers.push(newNumber);
+        }
+
+        this.randomizeNumberOrder (maxLength, numbers);
+
+    }
+
+    alphabet : LetterAndReplacement[]
 
     mixCharacters (message:string) : string {
 
