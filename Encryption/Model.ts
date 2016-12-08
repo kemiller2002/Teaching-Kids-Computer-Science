@@ -25,16 +25,16 @@ class Model {
 
     constructor () {}
 
-    alphabet:LetterAndReplacement[] = this.makeAlphabet (); 
+    alphabet:LetterAndReplacement[] = Model.makeAlphabet (); 
 
     encryptionMethods : EncryptionMethod[] = [
-       new PlainText(), new ShiftCipher(), new SubstitutionCipher(this.makeAlphabet)
+       new PlainText(), new ShiftCipher(), new SubstitutionCipher(Model.makeAlphabet)
     ]
 
 
     selectedItem : EncryptionMethod; 
 
-    makeAlphabet () : LetterAndReplacement[] {
+    static makeAlphabet () : LetterAndReplacement[] {
         return "abcdefghijklmnopqrstuvwxyz".
                 split('').
                 map((l, _) => (new LetterAndReplacement(l)) );  
@@ -54,8 +54,7 @@ class ShiftCipher implements EncryptionMethod {
     shift (character : string) : string { 
         let charCode = character.charCodeAt(0)
         
-        if(character === ' ' || charCode < 97 || charCode > 122  ) 
-        {return character;} 
+        if(character === ' ' || charCode < 97 || charCode > 122  ) {return character;} 
 
         let  number =  Math.floor((charCode + this.offset) % 26 + 97);
 
@@ -75,21 +74,33 @@ class SubstitutionCipher implements EncryptionMethod {
         this.alphabet = makeLetters ();
         let count = this.alphabet.length; 
 
+        let randomizedOrder = SubstitutionCipher.randomizeNumberOrder
+            (this.alphabet.length); 
+
+        randomizedOrder.forEach((v, i) => {
+           this.alphabet[i].replacement = this.alphabet[v].letter;     
+        } );
+
     }
 
 
-    static randomizeNumberOrder (maxLength: number, numbers:number[]) : void{
-        if(maxLength === numbers.length){
-            return;
+    static randomizeNumberOrder (maxLength: number) : number[]{
+
+        let arrayLength = maxLength;
+
+        let numbersArray:number[] = []; 
+
+        while (arrayLength > 0) {
+            let newNumber = Math.floor(Math.random() * (maxLength - 0 ) + 0)
+
+            if(numbersArray.indexOf(newNumber) === -1) {
+                numbersArray.push(newNumber);
+                arrayLength --;
+            }
+
         }
-
-        let newNumber = Math.floor(Math.random() * (1 - 26) + 1)
-
-        if(numbers.indexOf(newNumber) === -1){
-            numbers.push(newNumber);
-        }
-
-        this.randomizeNumberOrder (maxLength, numbers);
+        
+        return numbersArray;
 
     }
 

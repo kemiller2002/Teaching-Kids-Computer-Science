@@ -11,7 +11,7 @@ declare class QUnit {
 QUnit.test("Check for alphabet", (assert:Assert) => {
         let model = new Model(); 
 
-        let alphabet = model.makeAlphabet();
+        let alphabet = Model.makeAlphabet();
 
         assert.ok(alphabet[0].letter === 'a' , "Found a"); 
     }
@@ -31,11 +31,21 @@ QUnit.test ("Check Shift", (assert:Assert) => {
 });
 
 QUnit.test ("check randomize", (assert:Assert) => {
-    let numbers:number[] = [];
     let length = 26;
 
-    SubstitutionCipher.randomizeNumberOrder(length, numbers)
+    let numbers:number[] = SubstitutionCipher.randomizeNumberOrder(length);
 
-    assert.ok(length === numbers.length, "array is appropriate length");
+    assert.ok(length === numbers.length, `array length: ${numbers.length}, expected length: ${length}`);
+    
+});
 
+QUnit.test ("Check letter population, substitution", (assert:Assert) => {
+
+    let substitution = new SubstitutionCipher(Model.makeAlphabet);
+
+    substitution.alphabet.forEach(element => { 
+            assert.ok (element.replacement !== '', 
+                `letter equals: ${element.letter}  replacement equals: ${element.replacement}`);
+    });
+       
 });
