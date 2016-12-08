@@ -1,3 +1,10 @@
+
+declare class ko {
+    static observable<T>(item?:T) : (item?:T) => T;
+    static observableArray<T>(item?:T) :((item?:T) => T)[]; 
+}
+
+
 interface EncryptionMethod {
     name:string;
     mixCharacters (message:string) : string
@@ -7,18 +14,6 @@ class LetterAndReplacement {
     constructor (public letter : string){}
  
     replacement : string = ""; 
-}
-
-
-
-interface Object {
-    tee<T>(fn : any) : T;
-}
-
-
-Object.prototype.tee = function<T> (fn : (i : T)=>void) {
-    fn (this);
-    return this;
 }
 
 class Model {
@@ -32,7 +27,18 @@ class Model {
     ]
 
 
-    selectedItem : EncryptionMethod; 
+    selectedMethod : (item?:EncryptionMethod) => EncryptionMethod = 
+        ko.observable<EncryptionMethod>(this.encryptionMethods[0]); 
+
+    unencryptedMessage : string; 
+    
+    encryptedMessage : (item?:string) => string = ko.observable<string>(); 
+
+    generateNewMessage () {
+        this.unencryptedMessage = "this is a test.";
+        let encryptedMessage = this.selectedMethod().mixCharacters(this.unencryptedMessage)
+        this.encryptedMessage (encryptedMessage);
+    }
 
     static makeAlphabet () : LetterAndReplacement[] {
         return "abcdefghijklmnopqrstuvwxyz".

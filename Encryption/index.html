@@ -3,16 +3,25 @@
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js" ></script>
     <script src="Model.js" ></script>
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+        rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
 <body>
 
-    <div>
+    <div style="padding:3px;">
             <label>Select Encryption Type:</label> 
                 <select 
                     data-bind="
                         options: encryptionMethods,
-                        optionsText:'name'"></select>
+                        optionsText:'name',
+                        value : selectedMethod
+                        "></select>
+                
+                <input type="button" data-bind="click: generateNewMessage" 
+                    value="Generate New Encrypted Message"/>
     </div>
 
     <div>
@@ -28,16 +37,13 @@
     </div>
 
     <div style="clear:both;padding-top:30px;">
-            <span>Message<span>
+            <span>Message</span>
             
             <div>
-                <div data-bind="foreach: message">
-                    
+                <div data-bind="foreach: encryptedMessage" style="font-size:14pt;">
+                    <span data-bind="text: $data" style="margin:0 0 0 0"></span>
                 </div>
-
-                
             </div>
-
     </div>
 
    
