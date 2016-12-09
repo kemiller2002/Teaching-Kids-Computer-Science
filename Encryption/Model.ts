@@ -1,7 +1,16 @@
 
+
+interface Observable<T> {
+    (item?:T) : T
+}
+
+interface ObservableArray<T> {
+    (item?:Observable<T>) : Observable<T>[]
+}
+
 declare class ko {
-    static observable<T>(item?:T) : (item?:T) => T;
-    static observableArray<T>(item?:T) :((item?:T) => T)[]; 
+    static observable<T>(item?:T) : Observable<T>;
+    static observableArray<T>(item?:T) :  Observable<T>[]; 
 }
 
 
@@ -20,7 +29,7 @@ class Model {
 
     constructor () {}
 
-    alphabet:LetterAndReplacement[] = Model.makeAlphabet (); 
+    alphabet:Observable<LetterAndReplacement>[] = Model.makeAlphabet (); 
 
     encryptionMethods : EncryptionMethod[] = [
        new PlainText(), new ShiftCipher(), new SubstitutionCipher(Model.makeAlphabet)
@@ -32,18 +41,28 @@ class Model {
 
     unencryptedMessage : string; 
     
-    encryptedMessage : (item?:string) => string = ko.observable<string>(); 
+    encryptedMessage : Observable<LetterAndReplacement>[] = ko.observableArray<LetterAndReplacement>()
 
     generateNewMessage () {
         this.unencryptedMessage = "this is a test.";
-        let encryptedMessage = this.selectedMethod().mixCharacters(this.unencryptedMessage)
-        this.encryptedMessage (encryptedMessage);
+        let encryptedText = this.selectedMethod().mixCharacters(this.unencryptedMessage)
+
+        let encryptedMessage : Observable<LetterAndReplacement>[] = 
+            encryptedText.split('').
+            map(l => this.getLetterAndReplacementByLetter(l));
+        
+        encryptedMessage.forEach(l => this.encryptedMessage.push(l));
     }
 
-    static makeAlphabet () : LetterAndReplacement[] {
+    static makeAlphabet () : Observable<LetterAndReplacement>[] {
         return "abcdefghijklmnopqrstuvwxyz".
                 split('').
-                map((l, _) => (new LetterAndReplacement(l)) );  
+                map((l, _) => (ko.observable(new LetterAndReplacement(l))) );  
+    }
+
+    getLetterAndReplacementByLetter (letter:string) : Observable<LetterAndReplacement> {
+        return this.alphabet.filter(x=>x().letter.toLowerCase() === letter.toLowerCase())[0] 
+            || ko.observable<LetterAndReplacement>(new LetterAndReplacement(letter));
     }
 }
 
@@ -76,7 +95,7 @@ class SubstitutionCipher implements EncryptionMethod {
 
     name =  "Substitution Cipher"
 
-    constructor (makeLetters : () => LetterAndReplacement[]) {
+    constructor (makeLetters : () => Observable<LetterAndReplacement>[]) {
         this.alphabet = makeLetters ();
         let count = this.alphabet.length; 
 
@@ -84,7 +103,7 @@ class SubstitutionCipher implements EncryptionMethod {
             (this.alphabet.length); 
 
         randomizedOrder.forEach((v, i) => {
-           this.alphabet[i].replacement = this.alphabet[v].letter;     
+           this.alphabet[i]().replacement = this.alphabet[v]().letter;     
         } );
 
     }
@@ -110,7 +129,7 @@ class SubstitutionCipher implements EncryptionMethod {
 
     }
 
-    alphabet : LetterAndReplacement[]
+    alphabet : Observable<LetterAndReplacement>[]
 
     mixCharacters (message:string) : string {
 
