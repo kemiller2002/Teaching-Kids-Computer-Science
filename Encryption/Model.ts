@@ -21,8 +21,21 @@ interface EncryptionMethod {
 
 class LetterAndReplacement {
     constructor (public letter : string){}
- 
-    replacement : string = ""; 
+    /*
+    replacement : string = ""; */
+
+
+    private _replacement : string;
+
+    get replacement() {
+        return this._replacement || this.letter;
+    }
+
+    set replacement(l:string) {
+        console.log (`replaced ${this._replacement} with ${l}`)
+        this._replacement = (l === "" || l === undefined) ? undefined : l;
+    }
+
 }
 
 class Model {
@@ -51,6 +64,10 @@ class Model {
             encryptedText.split('').
             map(l => this.getLetterAndReplacementByLetter(l));
         
+        console.log(this.encryptedMessage.length);
+        while(this.encryptedMessage.pop() !== undefined) {
+        }
+
         encryptedMessage.forEach(l => this.encryptedMessage.push(l));
     }
 

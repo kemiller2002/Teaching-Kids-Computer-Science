@@ -13,7 +13,7 @@ QUnit.test("Check for alphabet", (assert:Assert) => {
 
         let alphabet = Model.makeAlphabet();
 
-        assert.ok(alphabet[0].letter === 'a' , "Found a"); 
+        assert.ok(alphabet[0]().letter === 'a' , "Found a"); 
     }
 );
 
