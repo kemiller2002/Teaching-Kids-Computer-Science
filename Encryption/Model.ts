@@ -41,7 +41,7 @@ class Model {
     alphabet:Observable<LetterAndReplacement>[] = Model.makeAlphabet (); 
 
     encryptionMethods : EncryptionMethod[] = [
-       new PlainText(), new ShiftCipher(), new SubstitutionCipher(Model.makeAlphabet)
+       new PlainText(), new RotCipher(), new SubstitutionCipher(Model.makeAlphabet)
     ]
 
     selectedMethod : (item?:EncryptionMethod) => EncryptionMethod = 
@@ -81,12 +81,16 @@ class PlainText {
     mixCharacters(message:string) : string {return message;}
 }
 
-class ShiftCipher implements EncryptionMethod {
-    name  : string =  "Shift Cipher"
+class RotCipher implements EncryptionMethod {
+    name  : string =  "Rotation Cipher"
 
-    offset : number =  (() => Math.floor(Math.random() * (1 - 26) + 1))();
+    createOffset () : number { return Math.floor(Math.random() * (1 - 26) + 1);}
+
+    offset : number =  this.createOffset();
 
     shift (character : string) : string { 
+        this.offset = this.createOffset();
+
         let charCode = character.charCodeAt(0)
         
         if(character === ' ' || charCode < 97 || charCode > 122  ) {return character;} 
@@ -107,15 +111,6 @@ class SubstitutionCipher implements EncryptionMethod {
 
     constructor (makeLetters : () => Observable<LetterAndReplacement>[]) {
         this.alphabet = makeLetters ();
-        let count = this.alphabet.length; 
-
-        let randomizedOrder = SubstitutionCipher.randomizeNumberOrder
-            (this.alphabet.length); 
-
-        randomizedOrder.forEach((v, i) => {
-           this.alphabet[i]().replacement (this.alphabet[v]().letter);     
-        } );
-
     }
 
 
@@ -143,7 +138,20 @@ class SubstitutionCipher implements EncryptionMethod {
 
     mixCharacters (message:string) : string {
 
-        return "";
+        let randomizedOrder = SubstitutionCipher.randomizeNumberOrder
+            (this.alphabet.length); 
+
+        randomizedOrder.forEach((v, i) => {
+           this.alphabet[i]().replacement (this.alphabet[v]().letter);     
+        } );
+
+        let getLetterSwitch = (l:string) => {
+            let letter = this.alphabet.filter(a => a().letter.toLowerCase() === l)[0];
+
+            return (letter) ? letter().replacement() : l;
+        };
+
+        return message.split('').map(getLetterSwitch).join('');
     }
 
 

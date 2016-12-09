@@ -19,7 +19,7 @@ QUnit.test("Check for alphabet", (assert:Assert) => {
 
 
 QUnit.test ("Check Shift", (assert:Assert) => {
-    let shift = new ShiftCipher(); 
+    let shift = new RotCipher(); 
 
     let unencryptedMessage = "this is a test."
 
