@@ -30,7 +30,7 @@
             <div style="float:left;padding-left:2px;text-align:center;">
                     <span data-bind="text:letter"></span>
                     <br/>
-                    <input type="text"  data-bind="text:replacement" style="width:20px;" maxlength="1" />                    
+                    <input type="text"  data-bind="value:replacement" style="width:20px;" maxlength="1" />                    
             </div>
         </div>
         
@@ -41,10 +41,13 @@
             
             <div>
                 <div data-bind="foreach: encryptedMessage" style="font-size:14pt;">
-                    <span data-bind="text: $data.letter" style="margin:0 0 0 0"></span>
+                    <input type="text" data-bind="value: $data.encryptionReplacement"
+                         style="width:20px">
                 </div>
             </div>
     </div>
+
+
 
    
 

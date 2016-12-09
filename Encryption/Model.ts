@@ -21,20 +21,27 @@ interface EncryptionMethod {
 
 class LetterAndReplacement {
     constructor (public letter : string){}
-    /*
-    replacement : string = ""; */
-
-
-    private _replacement : string;
+    
+    private _replacement : string = undefined; 
+    private _replacementSet : boolean = false;
 
     get replacement() {
-        return this._replacement || this.letter;
+        return this._replacement || (this._replacementSet) ? this.letter : "";
+    }
+    
+    set replacement(l : string) {
+        this._replacement = l; 
+        this._replacementSet = true;
+        console.log(`REPLACED ${l} `)
     }
 
-    set replacement(l:string) {
-        console.log (`replaced ${this._replacement} with ${l}`)
-        this._replacement = (l === "" || l === undefined) ? undefined : l;
-    }
+
+
+    get encryptionReplacement() {
+        return this.replacement || this.letter;
+    }/*
+     set encryptionReplacement(l : string) {
+    }*/
 
 }
 
@@ -48,6 +55,7 @@ class Model {
        new PlainText(), new ShiftCipher(), new SubstitutionCipher(Model.makeAlphabet)
     ]
 
+    test:any= ko.observable("SDF"); //Observable<LetterAndReplacement> = ko.observable(new LetterAndReplacement("!"));
 
     selectedMethod : (item?:EncryptionMethod) => EncryptionMethod = 
         ko.observable<EncryptionMethod>(this.encryptionMethods[0]); 
@@ -64,9 +72,7 @@ class Model {
             encryptedText.split('').
             map(l => this.getLetterAndReplacementByLetter(l));
         
-        console.log(this.encryptedMessage.length);
-        while(this.encryptedMessage.pop() !== undefined) {
-        }
+        while(this.encryptedMessage.pop() !== undefined) {}
 
         encryptedMessage.forEach(l => this.encryptedMessage.push(l));
     }
