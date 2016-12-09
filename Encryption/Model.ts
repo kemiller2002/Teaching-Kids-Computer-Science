@@ -10,7 +10,8 @@ interface ObservableArray<T> {
 
 declare class ko {
     static observable<T>(item?:T) : Observable<T>;
-    static observableArray<T>(item?:T) :  Observable<T>[]; 
+    static observableArray<T>(item?:T) :  Observable<T>[];
+    static computed<T> (fn : (() => T), i:any) : T; 
 }
 
 
@@ -22,26 +23,14 @@ interface EncryptionMethod {
 class LetterAndReplacement {
     constructor (public letter : string){}
     
-    private _replacement : string = undefined; 
-    private _replacementSet : boolean = false;
+    replacement : Observable<string> = ko.observable(""); 
 
-    get replacement() {
-        return this._replacement || (this._replacementSet) ? this.letter : "";
-    }
-    
-    set replacement(l : string) {
-        this._replacement = l; 
-        this._replacementSet = true;
-        console.log(`REPLACED ${l} `)
-    }
-
-
-
-    get encryptionReplacement() {
-        return this.replacement || this.letter;
-    }/*
-     set encryptionReplacement(l : string) {
-    }*/
+    replacedLetterValue : string = ko.computed (
+            () => {
+                    return (this.replacement() === "" || !this.replacement()) ?
+                        this.letter : this.replacement();
+                
+            }, this); 
 
 }
 
@@ -54,8 +43,6 @@ class Model {
     encryptionMethods : EncryptionMethod[] = [
        new PlainText(), new ShiftCipher(), new SubstitutionCipher(Model.makeAlphabet)
     ]
-
-    test:any= ko.observable("SDF"); //Observable<LetterAndReplacement> = ko.observable(new LetterAndReplacement("!"));
 
     selectedMethod : (item?:EncryptionMethod) => EncryptionMethod = 
         ko.observable<EncryptionMethod>(this.encryptionMethods[0]); 
@@ -126,7 +113,7 @@ class SubstitutionCipher implements EncryptionMethod {
             (this.alphabet.length); 
 
         randomizedOrder.forEach((v, i) => {
-           this.alphabet[i]().replacement = this.alphabet[v]().letter;     
+           this.alphabet[i]().replacement (this.alphabet[v]().letter);     
         } );
 
     }

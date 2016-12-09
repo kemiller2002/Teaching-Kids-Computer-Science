@@ -44,7 +44,7 @@ QUnit.test ("Check letter population, substitution", (assert:Assert) => {
     let substitution = new SubstitutionCipher(Model.makeAlphabet);
 
     substitution.alphabet.forEach(element => { 
-            assert.ok (element().replacement !== '', 
+            assert.ok (element().replacement() !== '', 
                 `letter equals: ${element().letter}  replacement equals: ${element().replacement}`);
     });
        
