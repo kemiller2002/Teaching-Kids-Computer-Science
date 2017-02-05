@@ -51,9 +51,35 @@ class Model {
     
     encryptedMessage : Observable<LetterAndReplacement>[] = ko.observableArray<LetterAndReplacement>()
 
+    messages : string [] = [
+        "Never trust anything that can think for itself if you can’t see where it keeps its brain. ― Harry Potter and the Chamber of Secrets",
+        "You sort of start thinking anything’s possible if you’ve got enough nerve. ― Harry Potter and the Half-Blood Prince",
+        "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends. – Harry Potter and the Philosopher’s Stone"
+        ,"It’s no use going back to yesterday, because I was a different person then. - Alice in Wonderland"
+        ,"Why, sometimes I've believed as many as six impossible things before breakfast. Alice in Wonderland"
+        ,"Never, never, never give up. - Winston Churchhill" 
+        ,"It's the job that's never started as takes longest to finish. - Lord of the Rings"
+        ,"Do. Or do not. There is no try. - The Empire Stikes Back"
+        ,"Never tell me the odds - The Empire Strikes Back."
+        ,"Your father... was seduced by the Dark Side of the Force. He ceased to be the Jedi Anakin Skywalker and became Darth Vader. When that happened, the good man who was your father was destroyed. So, what I told you was true... from a certain point of view. - Return of the Jedi"
+    ];
+
+    getRandomMessage () : string {
+        let ceiling = this.messages.length;
+
+        let randomNumber = Math.random() * 100
+
+        let entryNumber = Math.floor( randomNumber % ceiling);
+
+        return this.messages[entryNumber].toLowerCase();
+    }
+
     generateNewMessage () {
-        this.unencryptedMessage = "this is a test.";
+        this.unencryptedMessage = this.getRandomMessage();
+
         let encryptedText = this.selectedMethod().mixCharacters(this.unencryptedMessage)
+
+        console.log(`${this.unencryptedMessage} -> ${encryptedText}`)
 
         let encryptedMessage : Observable<LetterAndReplacement>[] = 
             encryptedText.split('').
@@ -88,8 +114,7 @@ class RotCipher implements EncryptionMethod {
 
     offset : number =  this.createOffset();
 
-    shift (character : string) : string { 
-        this.offset = this.createOffset();
+    shift (character : string, offset:number) : string { 
 
         let charCode = character.charCodeAt(0)
         
@@ -101,7 +126,8 @@ class RotCipher implements EncryptionMethod {
     }
 
     mixCharacters (message:string) : string {
-        return message.split('').map((v, _) => this.shift(v) ).join('');
+        this.offset = this.createOffset();
+        return message.split('').map((v, _) => this.shift(v, this.offset) ).join('');
     }
 }
 
